@@ -1,0 +1,9 @@
+set(jbigkit_VERSION @PROJECT_VERSION@)
+
+@PACKAGE_INIT@
+
+set_and_check(jbigkit_INCLUDE_DIR "@PACKAGE_INCLUDE_INSTALL_DIR@")
+set_and_check(jbigkit_LIB_DIR "@PACKAGE_LIB_INSTALL_DIR@")
+set_and_check(jbigkit_BIN_DIR "@PACKAGE_BIN_INSTALL_DIR@")
+
+check_required_components(jbigkit)
