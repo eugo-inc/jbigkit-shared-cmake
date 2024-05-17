@@ -12,11 +12,13 @@ include_directories(src/include)
 # MARK: - 3. Libraries
 add_library(libjbig SHARED src/lib/jbig.c src/lib/jbig_ar.c)
 set_target_properties(libjbig PROPERTIES PUBLIC_HEADER "src/include/jbig.h;src/include/jbig_ar.h")
+# @TODO+:DOCS:SLAVA -> 0.0.0 versions for compatability with existing packages
 set_target_properties(libjbig PROPERTIES VERSION 0.0.0 SOVERSION 0)
 set_target_properties(libjbig PROPERTIES OUTPUT_NAME jbig)
 
 add_library(libjbig85 SHARED src/lib/jbig85.c src/lib/jbig_ar.c)
 set_target_properties(libjbig85 PROPERTIES PUBLIC_HEADER "src/include/jbig85.h;src/include/jbig_ar.h")
+# @TODO+:DOCS:SLAVA -> 0.0.0 versions for compatability with existing packages
 set_target_properties(libjbig85 PROPERTIES VERSION 0.0.0 SOVERSION 0)
 set_target_properties(libjbig85 PROPERTIES OUTPUT_NAME jbig85)
 
