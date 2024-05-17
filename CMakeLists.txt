@@ -1,22 +1,12 @@
 # MARK: - 1. Preface
 cmake_minimum_required(VERSION 3.28)
-set(PROJECT_VERSION 2.5.1)
-set(PROJECT_NAME jbigkit)
-project(${PROJECT_NAME} VERSION ${PROJECT_VERSION} LANGUAGES C)
-set(PACKAGE_CONFIGNAME ${PROJECT_NAME})
-set(PACKAGE_VERSION ${PROJECT_VERSION})
+project(jbigkit VERSION 2.5.2 LANGUAGES C)
 
 
 # MARK: - 2. General
 set(CMAKE_C_STANDARD 17)
 
 include_directories(src/include)
-
-# @TODO+:Slava -> Better explain why this is needed. For configuration files generation I suppose?
-include(GNUInstallDirs)
-set(INCLUDE_INSTALL_DIR ${CMAKE_INSTALL_INCLUDEDIR})
-set(LIB_INSTALL_DIR ${CMAKE_INSTALL_LIBDIR})
-set(BIN_INSTALL_DIR ${CMAKE_INSTALL_BINDIR})
 
 
 # MARK: - 3. Libraries
@@ -54,33 +44,11 @@ if(INSTALL_APPS)
 endif()
 
 
-# MARK: - 5. config.cmake Generation
-include(CMakePackageConfigHelpers)
-
-configure_package_config_file(
-    ${PACKAGE_CONFIGNAME}-config.cmake.in
-    ${CMAKE_CURRENT_BINARY_DIR}/${PACKAGE_CONFIGNAME}-config.cmake
-    INSTALL_DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/${EXPORT_NAME}
-    PATH_VARS INCLUDE_INSTALL_DIR LIB_INSTALL_DIR BIN_INSTALL_DIR
-)
-write_basic_package_version_file(
-    ${CMAKE_CURRENT_BINARY_DIR}/${PACKAGE_CONFIGNAME}-config-version.cmake
-    VERSION ${PACKAGE_VERSION}
-    COMPATIBILITY AnyNewerVersion
-)
-
-
-# MARK: - 6. Targets
+# MARK: - 5. Targets
 install(
     TARGETS ${JBIGKIT_TARGETS}
     RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
     LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
     ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
     PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
-)
-
-install(
-    FILES ${CMAKE_CURRENT_BINARY_DIR}/${PACKAGE_CONFIGNAME}-config.cmake
-    ${CMAKE_CURRENT_BINARY_DIR}/${PACKAGE_CONFIGNAME}-config-version.cmake
-    DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/${EXPORT_NAME}
 )
