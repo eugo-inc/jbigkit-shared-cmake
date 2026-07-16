@@ -6,6 +6,11 @@ project(jbigkit VERSION 2.5.5 LANGUAGES C)
 # MARK: - 2. General
 set(CMAKE_C_STANDARD 17)
 
+# Defines CMAKE_INSTALL_{BINDIR,LIBDIR,INCLUDEDIR} consumed by MARK 5 — without it they are empty and
+# install(... PUBLIC_HEADER ...) silently drops jbig.h/jbig85.h/jbig_ar.h (libs still land via the
+# builder's explicit -DCMAKE_INSTALL_LIBDIR). Cache overrides still win: GNUInstallDirs only fills unset vars.
+include(GNUInstallDirs)
+
 include_directories(src/include)
 
 
