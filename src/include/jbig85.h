@@ -2,7 +2,7 @@
  *  Header file for the T.85 "light" version of the portable
  *  JBIG image compression library
  *
- *  Copyright 1995-2014 -- Markus Kuhn -- http://www.cl.cam.ac.uk/~mgk25/
+ *  Copyright 1995-2026 -- Markus Kuhn -- https://www.cl.cam.ac.uk/~mgk25/
  */
 
 #ifndef JBG85_H
@@ -22,7 +22,7 @@
 /*
  * JBIG-KIT licence agreement reference code:
  * If you use JBIG-KIT under a commercial licence, please replace
- * below the letters GPL with the reference code that you received
+ * the letters GPL below with the reference code that you received
  * with your licence agreement. (This code is typically a letter "A"
  * followed by four decimal digits, e.g. "A1234".)
  */
@@ -114,8 +114,8 @@ struct jbg85_dec_state {
   unsigned long comment_skip;      /* remaining bytes of a COMMENT segment */
   unsigned long x;                             /* x position of next pixel */
   unsigned long stripe;                                  /* current stripe */
-  unsigned long y;                      /* line in image (first line is 0) */ 
-  unsigned long i;   /* line in current stripe (first line of stripe is 0) */ 
+  unsigned long y;                      /* line in image (first line is 0) */
+  unsigned long i;   /* line in current stripe (first line of stripe is 0) */
   int at_moves;                /* number of AT moves in the current stripe */
   unsigned long at_line[JBG85_ATMOVES_MAX];         /* lines at which an   *
 					             * AT move will happen */
@@ -167,7 +167,7 @@ const char *jbg85_strerror(int errnum);
 /* enquire about validity of image-size results */
 #define jbg85_dec_validwidth(s)  ((s)->bie_len == 20)
 #define jbg85_dec_finalheight(s) ((s)->bie_len == 20 &&			\
-				  ((((s)->options & JBG_VLENGHT) == 0) || \
+				  ((((s)->options & JBG_VLENGTH) == 0) || \
 				   ((s)->y >= (s)->y0)))
 
 #endif /* JBG85_H */

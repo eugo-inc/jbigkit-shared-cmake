@@ -1,6 +1,6 @@
 # MARK: - 1. Preface
 cmake_minimum_required(VERSION 3.28)
-project(jbigkit VERSION 2.5.5 LANGUAGES C)
+project(jbigkit VERSION 2.6.0 LANGUAGES C)
 
 
 # MARK: - 2. General

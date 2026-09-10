@@ -2,7 +2,7 @@
 Using the JBIG-KIT library
 --------------------------
 
-Markus Kuhn -- 2013-09-10
+Markus Kuhn -- 2026-05-08
 
 
 This text explains how to use the functions provided by the JBIG-KIT
@@ -13,8 +13,8 @@ uncompressed and compressed image in RAM.
 
 [For applications that require only the single-bit-per-pixel "fax
 subset" of the JBIG1 standard defined in ITU-T Recommendation T.85
-<http://www.itu.int/rec/T-REC-T.85/en>, the alternative implementation
-found in jbig85.c may be preferable. It keeps not more than three
+<https://www.itu.int/rec/T-REC-T.85/en>, the alternative implementation
+found in jbig85.c may be preferable. It keeps no more than three
 lines of the uncompressed image in RAM, which makes it particularly
 suitable for embedded applications. For information on how to use
 jbig85.c, please refer to the separate documentation file jbig85.txt.]
@@ -25,8 +25,8 @@ jbig85.c, please refer to the separate documentation file jbig85.txt.]
 We start with a short introduction to JBIG1. More detailed information
 is provided in the "Introduction and overview" section of the JBIG1
 standard. Information on how to obtain a copy of the standard is
-available from <http://www.itu.int/rec/T-REC-T.82/en> or
-<http://www.iso.ch/>.
+available from <https://www.itu.int/rec/T-REC-T.82/en> or
+<https://www.iso.org/>.
 
 Image data encoded with the JBIG algorithm is separated into planes,
 layers, and stripes. Each plane contains one bit per pixel. The number
@@ -34,8 +34,8 @@ of planes stored in a JBIG data stream is the number of bits per
 pixel. Resolution layers are numbered from 0 to D with 0 being the
 layer with the lowest resolution and D the one with the highest. Each
 next higher resolution layer has twice the number of rows and columns.
-Layer 0 is encoded independently of any other data, all other
-resolution layers are encoded as only the difference between the next
+Layer 0 is encoded independently of any other data, while all other
+resolution layers are encoded only as the difference between the next
 lower and the current layer. For applications that require very quick
 access to parts of an image, it is possible to divide an image into
 several horizontal stripes. All stripes of one resolution layer have
@@ -45,12 +45,12 @@ image is equal in all resolution layers and in all bit planes.
 The compressed data stream specified by the JBIG standard is called a
 bi-level image entity (BIE). A BIE consists of a 20-byte header,
 followed by an optional 1728-byte table (usually not present, except
-in special applications) followed by a sequence of stripe data
+in special applications), followed by a sequence of stripe data
 entities (SDE). Each SDE encodes the content of one single stripe in
 one plane of one resolution layer. Between the SDEs, other information
 blocks (called floating marker segments) can also be present. They are
 used to change certain parameters of the algorithm in the middle of an
-image or contain additional application specific information. A BIE
+image or contain additional application-specific information. A BIE
 looks like this:
 
 
@@ -112,11 +112,11 @@ header contains only the minimum amount of information absolutely
 required by the decompression algorithm. Many features expected from a
 good file format are missing in the BIE data stream:
 
-  - no "magic code" in the first few bytes to allow identification
+  - a "magic code" in the first few bytes to allow identification
     of the file format on a typeless file system and to allow
     automatic distinction from other compression algorithms
 
-  - no standardized way to encode additional information such as a
+  - a standardized way to encode additional information such as a
     textual description, information about the meaning of various bit
     planes, the physical size and resolution of the document, etc.
 
@@ -151,7 +151,7 @@ these. Each line of a bitmap has to be stored in an integral number of
 bytes. If the image width is not an integral multiple of eight, then
 the final byte has to be padded with zero bits.
 
-For example the 23x5 pixels large single plane image:
+For example, the 23x5-pixel single-plane image:
 
    .XXXXX..XXX...X...XXX..
    .....X..X..X..X..X.....
@@ -171,16 +171,16 @@ or in hexadecimal notation
 
    7c e2 38 04 92 40 04 e2 5c 44 92 44 38 e2 38
 
-This is the format used in binary PBM files and it can also be handled
+This is the format used in binary PBM files, and it can also be handled
 directly by the Xlib library of the X Window System.
 
 As JBIG can also handle images with multiple bit planes, the jbig.c
-library functions accept and return always arrays of pointers to
+library functions always accept and return arrays of pointers to
 bitmaps with one pointer per plane.
 
 For single-plane images, the standard recommends that a 0 pixel
 represents the background and a 1 pixel represents the foreground
-colour of an image, in other words, 0 is white and 1 is black for
+colour of an image; in other words, 0 is white and 1 is black for
 scanned paper documents. For images with several bits per pixel, the
 JBIG standard makes no recommendations about how various colours should
 be encoded.
@@ -208,12 +208,12 @@ following table:
                 7           111            100
 
 The form of Gray code shown above has the property that the second
-half of the code (numbers 4 - 7) is simply the mirrored first half
-(numbers 3 - 0) with the first bit set to one. This way, arbitrarily
+half of the code (numbers 4 to 7) is simply the mirrored first half
+(numbers 3 down to 0) with the first bit set to one. This way, arbitrarily
 large Gray codes can be generated quickly by mirroring the above
 example and prefixing the first half with zeros and the second half
 with ones as often as required. In grey-scale images, it is common
-practise to use the all-0 code for black and the all-1 code for white.
+practice to use the all-0 code for black and the all-1 code for white.
 
 No matter whether a Gray code or a binary code is used for encoding a
 pixel intensity in several bit planes, it always makes sense to store
@@ -226,11 +226,12 @@ during the transmission.
 
 2.2  A simple compression application
 
-In order to use jbig.c in your application, just link libjbig.a to
-your executable (on Unix systems just add -ljbig and -L. to the
-command line options of your compiler, on other systems you will have
-to write a new Makefile anyway), copy the file jbig.h into your source
-directory and put the line
+In order to use jbig.c in your application, just link your executable
+with both jbig.c and jbig_ar.c. Both are already combined into
+libjbig.a by the provided Makefile, so on Unix systems, just add
+-ljbig and -L. to the command line options of your compiler. On other
+systems, you will probably have to write a new Makefile. Make sure your
+compiler can find the file jbig.h and put the line
 
   #include "jbig.h"
 
@@ -259,14 +260,14 @@ The parameters have the following meaning:
 
   y             The height of your image in pixels (lines).
 
-  pl            the number of bitmap planes you want to encode.
+  pl            The number of bitmap planes you want to encode.
 
-  p             A pointer to an array of pl pointers, where each is again
-                pointing to the first byte of a bitmap as described in
+  p             A pointer to an array of pl pointers, where each in turn
+                points to the first byte of a bitmap as described in
                 section 2.1.
 
   data_out      This is a call-back function that the encoder will
-                call during the compression process by in order to
+                call during the compression process in order to
                 deliver the BIE data to your application. The
                 parameters of the function data_out are a pointer
                 start to the new block of data being delivered, as
@@ -306,7 +307,7 @@ to stdout, looks like this:
 void output_bie(unsigned char *start, size_t len, void *file)
 {
   fwrite(start, 1, len, (FILE *) file);
-  
+
   return;
 }
 
@@ -319,17 +320,17 @@ int main()
   };
   unsigned char *bitmaps[1] = { bitmap };
   struct jbg_enc_state se;
-  
-  jbg_enc_init(&se, 23, 5, 1, bitmaps, 
+
+  jbg_enc_init(&se, 23, 5, 1, bitmaps,
 	       output_bie, stdout);              /* initialize encoder */
   jbg_enc_out(&se);                                    /* encode image */
   jbg_enc_free(&se);                    /* release allocated resources */
-  
+
   return 0;
 }
 ---------------------------------------------------------------------------
 
-This software produces a 42 byte long BIE. (JBIG is not very good at
+This software produces a 42-byte-long BIE. (JBIG is not very good at
 compressing extremely small images like in this example, because the
 arithmetic encoder requires some startup data in order to generate
 reasonable statistics which influence the compression process and
@@ -349,13 +350,13 @@ following default values are used for various compression parameters:
     standard together with the suggested adaptive template change
     algorithm). However, not less than 2 and not more than 128 lines
     are used in order to stay within the suggested minimum parameter
-    support range specified in annex A of the standard).
+    support range specified in annex A of the standard.
 
   - All optional parts of the JBIG algorithm are activated (TPBON,
     TPDON and DPON).
 
   - The default resolution reduction table and the default deterministic
-    prediction table are used
+    prediction table are used.
 
   - The maximal vertical offset of the adaptive template pixel is 0
     and the maximal horizontal offset is 8 (mx = 8, my = 0).
@@ -364,7 +365,7 @@ In order to change any of these default parameters, additional
 functions have to be called between jbg_enc_init() and jbg_enc_out().
 
 In order to activate progressive encoding, it is possible to specify
-with 
+with
 
   void jbg_enc_layers(struct jbg_enc_state *s, int d);
 
@@ -442,15 +443,15 @@ the SDEs are stored in the BIE. The bits have the following meaning:
                to a database which can easily reorder the SDEs before
                sending them to a decoder. Warning: JBIG decoders are
                not expected to support the HITOLO option (e.g. the
-               jbig.c decoder currently does not) so you should
+               jbig.c decoder currently does not), so you should
                normally not use it.
 
   JBG_SEQ      Usually, at first all stripes of one resolution layer
                are written to the BIE and then all stripes of the next
-               layer, and so on. When the SEQ bit is set however, then
+               layer, and so on. When the SEQ bit is set, however, then
                all layers of the first stripe will be written,
                followed by all layers of the second stripe, etc. This
-               option also should normally never be required and is
+               option, too, should normally never be required and is
                not supported by the current jbig.c decoder.
 
   JBG_SMID     In case there exist several bit planes, then the order of
@@ -464,7 +465,7 @@ the SDEs are stored in the BIE. The bits have the following meaning:
 
 The above description may be somewhat confusing, but the following
 table (see also Table 11 in ITU-T T.82) clarifies how the three bits
-JBG_SEQ, JBIG_ILEAVE and JBG_SMID influence the ordering of the loops
+JBG_SEQ, JBG_ILEAVE and JBG_SMID influence the ordering of the loops
 over all stripes, planes and layers:
 
 
@@ -492,7 +493,7 @@ some of the optional algorithms defined by JBIG:
                  pixel is encoded. Some people in the JBIG committee
                  seem to have argued that using only 2 lines will
                  make software implementations a little bit faster,
-                 however others have argued that using only two lines
+                 however, others have argued that using only two lines
                  will decrease compression efficiency by around 5%.
                  As you might expect from a committee, now both
                  alternatives are allowed and if JBG_LRLTWO is set,
@@ -503,21 +504,21 @@ some of the optional algorithms defined by JBIG:
                  default.
 
   JBG_TPDON      This activates the "typical prediction" algorithm
-                 for differential layers which avoids that large
+                 for differential layers, which avoids that large
                  areas of equal colour have to be encoded at all.
                  This is on by default and there is no good reason to
                  switch it off except for debugging or preparing data
                  for cheap JBIG hardware that might not support this
                  option.
 
-  JBG_TPBON      Like JBG_TPDON this activates the "typical prediction"
+  JBG_TPBON      Like JBG_TPDON, this activates the "typical prediction"
                  algorithm in the lowest resolution layer. Also activated
                  by default.
 
   JBG_DPON       This bit activates for the differential resolution
                  layers the "deterministic prediction" algorithm,
-                 which avoids that higher resolution layer pixels are
-                 encoded when their value can already be determined
+                 which avoids encoding higher-resolution-layer pixels
+                 whose value can already be determined
                  with the knowledge of the neighbour pixels, the
                  corresponding lower resolution pixels and the
                  resolution reduction algorithm. This is also
@@ -527,8 +528,8 @@ some of the optional algorithms defined by JBIG:
 
   JBG_DELAY_AT   Use a slightly less efficient algorithm to determine
                  when an adaptive template change is necessary. With
-                 this bit set, the encoder output is compatible to the
-                 conformance test examples in cause 7.2 of ITU-T T.82.
+                 this bit set, the encoder output is compatible with the
+                 conformance test examples in clause 7.2 of ITU-T T.82.
                  Then all adaptive template changes are delayed until
                  the first line of the next stripe. This option is by
                  default deactivated and is only required for passing a
@@ -548,7 +549,7 @@ requires support for mx = 127 and my = 0. Default is mx = 8 and my =
 l0 is zero, then the corresponding current value remains unmodified.
 
 The resolution reduction and deterministic prediction tables can also
-be replaced. However as these options are anyway only for experts,
+be replaced. However, as these options are anyway only for experts,
 please have a look at the source code of jbg_enc_out() and the struct
 members dppriv and res_tab of struct jbg_enc_state for the details of
 how to do this, in case you really need it. The functions
@@ -572,21 +573,21 @@ and has_planes specifies how many bits per pixel are used. As each
 pixel is represented by an integral number of consecutive bytes, of
 which each contains up to eight bits, the total length of the input
 image array src[] will therefore be x * y * ((has_planes + 7) / 8)
-bytes. The pixels are stored as usually in English reading order, and
+bytes. The pixels are stored as usual, in English reading order, and
 for each pixel the integer value is stored with the most significant
 byte coming first (Bigendian). This is exactly the format used in raw
 PGM files. In encode_planes, the number of bit planes that shall be
-extracted can be specified. This allows for instance to extract only
-the most significant 8 bits of a 12-bit image, where each pixel is
+extracted can be specified. This allows, for instance, extracting
+only the most significant 8 bits of a 12-bit image, where each pixel is
 represented by two bytes, by specifying has_planes = 12 and
 encode_planes = 8. If use_graycode is zero, then the binary code of
 the pixel integer values will be used instead of the Gray code. Plane
-0 contains always the most significant bit.
+0 always contains the most significant bit.
 
 
 3  Decompressing an image
 
-Like with the compression functions, if you want to use the jbig.c
+As with the compression functions, if you want to use the jbig.c
 library, you have to put the line
 
   #include "jbig.h"
@@ -612,7 +613,7 @@ The pointer data points to the first byte of a data block with length
 len, which contains bytes from a BIE. It is not necessary to pass a
 whole BIE at once to jbg_dec_in(), it can arrive fragmented in any way
 by calling jbg_dec_in() several times. It is also possible to send
-several BIEs concatenated to jbg_dec_in(), however these then have to
+several BIEs concatenated to jbg_dec_in(), however, these then have to
 fit together. If you send several BIEs to the decoder, the lowest
 resolution layer in each following BIE has to be the highest
 resolution layer in the previous BIE plus one and the image sizes and
@@ -629,11 +630,11 @@ Once the end of a BIE has been reached, the return value of
 jbg_dec_in() will be JBG_EOK. After this has happened, the functions
 and macros
 
-  unsigned long jbg_dec_getwidth(struct jbg_dec_state *s);
-  unsigned long jbg_dec_getheight(struct jbg_dec_state *s);
-  int jbg_dec_getplanes(struct jbg_dec_state *s);
-  unsigned char *jbg_dec_getimage(struct jbg_dec_state *s, int plane);
-  unsigned long jbg_dec_getsize(struct jbg_dec_state *s);
+  unsigned long jbg_dec_getwidth(const struct jbg_dec_state *s);
+  unsigned long jbg_dec_getheight(const struct jbg_dec_state *s);
+  int jbg_dec_getplanes(const struct jbg_dec_state *s);
+  unsigned char *jbg_dec_getimage(const struct jbg_dec_state *s, int plane);
+  unsigned long jbg_dec_getsize(const struct jbg_dec_state *s);
 
 can be used to query the dimensions of the now completely decoded
 image and to get a pointer to all bitmap planes. The bitmaps are
@@ -664,7 +665,7 @@ a call to
   void jbg_dec_maxsize(struct jbg_dec_state *s, unsigned long xmax,
                        unsigned long ymax);
 
-an abort criterion for progressively encoded images. For instance if an
+an abort criterion for progressively encoded images. For instance, if an
 application will display a whole document on a screen which is 1024 x
 768 pixels large, then this application should call
 
@@ -673,7 +674,7 @@ application will display a whole document on a screen which is 1024 x
 before the decoding process starts. If the image has been encoded in
 progressive mode (i.e. with several resolution layers), then the
 decoder will stop with a return value JBG_EOK_INTR after the largest
-resolution layer that is still smaller than 1024 x 768. However this
+resolution layer that is still smaller than 1024 x 768. However, this
 is no guarantee that the image which can then be read out using
 jbg_dec_getimage(), etc. is really not larger than the specified
 maximal size. The application will have to check the size of the
@@ -703,9 +704,9 @@ The function
 
   const char *jbg_strerror(int errnum);
 
-returns a pointer to a short single line test message that explains
+returns a pointer to a short single line text message that explains
 the return value of jbg_dec_in(). This message can be used in order to
-provide the user a brief informative message about what when wrong
+provide the user a brief informative message about what went wrong
 while decompressing a JBIG image. The po/ subdirectory contains *.po
 files that translate the English ASCII strings returned by
 jbg_strerror() into other languages (e.g., for use with GNU gettext).
@@ -728,39 +729,56 @@ limitations:
   - Not more than JBG_ATMOVES_MAX (currently set to 64) ATMOVE
     marker segments can be handled per stripe.
 
-  - the number D of differential layers must be less than 32
+  - The number D of differential layers must be less than 32.
 
 None of the above limitations can be exceeded by a JBIG data stream
 that conforms to the ITU-T T.85 application profile for the use of
 JBIG1 in fax machines.
 
-The current implementation of the jbig.c decoder does not impose any
-limits on the image size that it will process, as long as malloc() is
-able to allocate enough heap space for the resulting bitmaps. The only
-exception is that jbg_dec_in() will return "Input data stream uses
+The maximum image size that a BIE header (BIH) can indicate is X_D =
+2^32-1 pixels wide, Y_D = 2^32-1 lines high, with P = 255 bits per
+pixel. Such an image would, in uncompressed form, require about 588
+exabytes. Once jbg_dec_in() has received the 20-byte long BIH at the
+start of the BIE, it will call malloc() to allocate enough memory to
+hold the uncompressed image planes. Users may, therefore, want to
+defend their application against excessive image-size parameters in a
+received BIH, by checking X_D, Y_D, and P against appropriate safety
+limits before handing over the BIE header to jbg_dec_in(). BIE headers
+indicating too large images might be abused for denial of service
+attacks, to exhaust the memory of a system (e.g., CVE-2017-9937). To
+manage this risk, the jbig.c decoder will now, by default, return "Not
+enough memory available" (JBG_ENOMEM) if the resulting final image
+layer would occupy more than 2 gigabytes. Users can adjust this limit
+by changing sd->maxmem right after having called jbg_dec_init(&sd).
+The actual amount of memory allocated with malloc() calls during the
+decoding process is somewhat higher (at least 25%) than the limit set
+in sd->maxmem, as the decoder requires additional heap memory that
+depends on the image dimensions.
+
+The jbg_dec_in() function will return "Input data stream uses
 unimplemented JBIG features" (JBG_EIMPL | 1) if Y_D equals 0xffffffff,
 which is an extreme value commonly used to encode images according to
 ITU-T T.85 where the height was unknown when the BIH was emitted.
-After jbg_dec_in() received the 20-byte long BIH at the start of the
-BIE, it will malloc() to allocate enough memory to hold the requested
-image planes and layers. If you want to defend your application
-against excessive image-size parameters in a received BIH, then do
-make sure that you check X_D, Y_D, and P against appropriate safety
-limits before handing over the BIH to jbg_dec_in().
+
+All malloc(), realloc() and free() functions called by jbig.c are
+wrapped by the functions checked_malloc(), checked_realloc() and
+checked_free(). These simply call abort() when memory allocation
+fails. Developers of embedded systems may want to replace them with
+alternative forms of exception handling.
 
 There are two more limitations of the current implementation of the
 jbig.c decoder that might cause problems with processing JBIG data
-stream that conform to ITU-T T.85:
+streams that conform to ITU-T T.85:
 
   - The jbig.c decoder was designed to operate incrementally.
     Each received byte is processed immediately as soon as it arrives.
     As a result, it does not look beyond the SDRST/SDNORM at the end
     of all stripes for any immediately following NEWLEN marker that
     might reduce the number of lines encoded by the current stripe.
-    However section 6.2.6.2 of ITU-T T.82 says that a NEWLEN marker
+    However, section 6.2.6.2 of ITU-T T.82 says that a NEWLEN marker
     segment "could refer to a line in the immediately preceding stripe
     due to an unexpected termination of the image or the use of only
-    such stripe", and ITU-T.85 explicitly suggests the use of this
+    such stripe", and ITU-T T.85 explicitly suggests the use of this
     for fax machines that start transmission before having encountered
     the end of the page.
 
@@ -773,8 +791,8 @@ stream that conform to ITU-T T.85:
 
 For both issues, there is a workaround available:
 
-If you encounter a BIE that has in the header the VLENGTH=1 option bit
-set, then first wait until you have received the entire BIE and stored
+If you encounter a BIE that has the VLENGTH=1 option bit set in its
+header, then first wait until you have received the entire BIE and stored
 it in memory. Then call the function
 
   int jbg_newlen(unsigned char *bie, size_t len);
@@ -782,11 +800,18 @@ it in memory. Then call the function
 where bie is a pointer to the first byte of the BIE and len its length
 in bytes. This function will scan the entire BIE for the first NEWLEN
 marker segment. It will then take the updated image-height value YD
-from it and use it to overwrite the YD value in the BIE header. The
-jbg_newlen() can return some of the same error codes as jbg_dec_in(),
-namely JBG_EOK if everything went fine, JBG_EAGAIN is the data
-provided is too short to be a valid BIE, JBG_EINVAL if a format error
-was encountered, and JBG_EABORT if an ABORT marker segment was found.
+from it and use it to overwrite the YD value in the BIE header.
+
+The jbg_newlen() function can return some of the same error codes as
+jbg_dec_in(): JBG_EOK if a NEWLEN marker segment was found and the YD
+field of the BIE header was successfully overwritten, and also if the
+BIE was well-formed but contained no NEWLEN (in which case the BIE is
+left unmodified); JBG_EAGAIN if the data is incomplete and more bytes
+are needed before scanning can finish; JBG_EINVAL if the BIE is
+malformed (e.g. a NEWLEN segment that tries to enlarge YD, an unknown
+marker code, or a PSCD without a terminating marker); and JBG_EABORT
+if an ABORT marker segment was encountered before any NEWLEN.
+
 After having patched the image-height value in the BIE using
 jbg_newlen(), simply hand over the BIE as usual to jbg_dec_in().
 
@@ -801,7 +826,7 @@ A more detailed description of the JBIG-KIT implementation is
   kontextsensitive arithmetische Codierung. Studienarbeit, Lehrstuhl
   für Betriebssysteme, IMMD IV, Universität Erlangen-Nürnberg,
   Erlangen, July 1995. (German, 62 pages)
-  <http://www.cl.cam.ac.uk/~mgk25/kuhn-sta.pdf>
+  <https://www.cl.cam.ac.uk/~mgk25/kuhn-sta.pdf>
 
 Please quote the above if you use JBIG-KIT in your research project.
 

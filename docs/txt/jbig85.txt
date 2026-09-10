@@ -2,7 +2,7 @@
 Using the T.85 "light" version of the JBIG-KIT library
 ------------------------------------------------------
 
-Markus Kuhn -- 2008-08-30
+Markus Kuhn -- 2026-05-08
 
 
 This text explains how to use the functions provided by the JBIG-KIT
@@ -14,7 +14,7 @@ software.
 
 The jbig85.c library implements only the "single-progression
 sequential coding" subset of the JBIG1 standard, which is defined in
-ITU-T Recommendation T.85 <http://www.itu.int/rec/T-REC-T.85/en>, also
+ITU-T Recommendation T.85 <https://www.itu.int/rec/T-REC-T.85/en>, also
 known as the "facsimile application profile". This means that the
 JBIG1 data streams that the jbig85.c library can process can have
 
@@ -70,8 +70,8 @@ your source code.
 We start with a short introduction to the T.85 subset of JBIG1. More
 detailed information is provided in the "Introduction and overview"
 section of the JBIG1 standard. Information on how to obtain a copy of
-the standard is available from <http://www.itu.int/rec/T-REC-T.82/en>
-or <http://www.iso.ch/>.
+the standard is available from <https://www.itu.int/rec/T-REC-T.82/en>
+or <https://www.iso.org/>.
 
 The JBIG1 standard allows the encoder to divide an image into several
 horizontal stripes. All stripes have equal size, except perhaps the
@@ -84,7 +84,7 @@ the content of one single stripe in one plane of one resolution layer.
 Between the SDEs, other information blocks (called floating marker
 segments) can also be present. They are used to change certain
 parameters of the algorithm in the middle of an image or contain
-additional application specific information. A BIE looks like this:
+additional application-specific information. A BIE looks like this:
 
 
           +------------------------------------------------+
@@ -127,11 +127,11 @@ header contains only the minimum amount of information absolutely
 required by the decompression algorithm. Many features expected from a
 good file format are missing in the BIE data stream:
 
-  - no "magic code" in the first few bytes to allow identification
+  - a "magic code" in the first few bytes to allow identification
     of the file format on a typeless file system and to allow
     automatic distinction from other compression algorithms
 
-  - no standardized way to encode additional information such as a
+  - a standardized way to encode additional information such as a
     textual description, the physical size and resolution of the
     document, etc.
 
@@ -155,18 +155,18 @@ information would then be stored in other fields of the same record,
 to simplify search operations.
 
 
-2  Compressing an image
+3  Compressing an image
 
-2.1  Format of the source image
+3.1  Format of the source image
 
 To be processed by the jbig85.c encoder, the image has to be present
-in memory a bitmap. Each byte of a bitmap contains eight pixels, where
+in memory as a bitmap. Each byte of a bitmap contains eight pixels, where
 the most significant bit represents the leftmost of these. Each line
 of a bitmap has to be stored in an integral number of bytes. If the
 image width is not an integral multiple of eight, then the final byte
 has to be padded with zero bits.
 
-For example the 23x5 pixels large single plane image:
+For example, the 23x5-pixel single-plane image:
 
    .XXXXX..XXX...X...XXX..
    .....X..X..X..X..X.....
@@ -186,21 +186,22 @@ or in hexadecimal notation
 
    7c e2 38 04 92 40 04 e2 5c 44 92 44 38 e2 38
 
-This is the format used in binary PBM files and it can also be handled
+This is the format used in binary PBM files, and it can also be handled
 directly by the Xlib library of the X Window System.
 
 The standard recommends that a 0 pixel represents the background and a
-1 pixel represents the foreground colour of an image, in other words, 0
+1 pixel represents the foreground colour of an image; in other words, 0
 is white and 1 is black for scanned paper documents.
 
 
-2.2  A simple compression application
+3.2  A simple compression application
 
-In order to use the library in your application, just link libjbig85.a
-to your executable (on Unix systems just add -ljbig85 and -L. to the
-command line options of your compiler, on other systems you will have
-to write a new Makefile anyway), copy the file jbig85.h into your
-source directory and put the line
+In order to use jbig85.c in your application, just link your
+executable with both jbig85.c and jbig_ar.c. Both are already combined
+into libjbig85.a by the provided Makefile, so on Unix systems, just
+add -ljbig85 and -L. to the command line options of your compiler. On
+other systems, you will probably have to write a new Makefile. Make
+sure your compiler can find the file jbig85.h and put the line
 
   #include "jbig85.h"
 
@@ -264,7 +265,7 @@ are:
 
   prevline      A pointer to the data that the line parameter pointed
                 to in the previous call. The value will be ignored
-		if this is the first call.
+                if this is the first call.
 
   prevprevline  A pointer to the data that the prevline parameter pointed
                 to in the previous call. The value will be ignored
@@ -287,7 +288,7 @@ to stdout, looks like this:
 void output_bie(unsigned char *start, size_t len, void *file)
 {
   fwrite(start, 1, len, (FILE *) file);
-  
+
   return;
 }
 
@@ -300,7 +301,7 @@ int main()
   };
   struct jbg85_enc_state se;
   int i;
-  
+
   jbg85_enc_init(&se, 23, 5, output_bie, stdout);      /* initialize encoder */
   jbg85_enc_options(&se, JBG_TPBON, 0, -1);      /* clear JBG_VLENGTH option */
   for (i = 0; i < 5; i++) {
@@ -312,14 +313,14 @@ int main()
 }
 ---------------------------------------------------------------------------
 
-This software produces a 37 byte long BIE. (JBIG is not very good at
+This software produces a 37-byte-long BIE. (JBIG is not very good at
 compressing extremely small images like in this example, because the
 arithmetic encoder requires some startup data in order to generate
 reasonable statistics which influence the compression process and
 because there is some header overhead.)
 
 
-2.3  More about compression
+3.3  More about compression
 
 If jbg85_enc_lineout() is called directly after jbg85_enc_init(), the
 following default values are used for various compression parameters:
@@ -368,19 +369,19 @@ of the optional algorithms defined by JBIG:
                  option should be left on. (The only reason the author
                  could think of for ever deactivating this option is
                  if you know in advance that there will never be two
-                 identical lines follow each other in the image to be
+                 identical lines following each other in the image to be
                  encoded, in which case deactivating this option might
                  provide a tiny performance improvement.)
 
   JBG_VLENGTH    This bit indicates that the image height y provided
                  to jbg85_enc_init() was only an estimate and may
-                 be lowered sometimes during the encoding process
+                 sometimes be lowered during the encoding process
                  using a call to jbg85_enc_newlen(). This feature
                  is intended for fax machines that start transmitting
                  a page while still scanning it and without knowing
                  how long the page is going to be.
 
-Value -1 for options keeps the current setting, the default is
+Value -1 for options keeps the current setting; the default is
 JBG_TPBON | JBG_VLENGTH.
 
 The other parameters are:
@@ -429,9 +430,9 @@ does that. This is probably only needed if there is no other way
 will be coming.
 
 
-3  Decompressing an image
+4  Decompressing an image
 
-Like with the compression functions, if you want to use the jbig85.c
+As with the compression functions, if you want to use the jbig85.c
 library, you have to put the line
 
   #include "jbig85.h"
@@ -524,7 +525,7 @@ case, call
 
   int jbg85_dec_end(struct jbg85_dec_state *s);
 
-to explicitely signal to the decoder that it has already received all
+to explicitly signal to the decoder that it has already received all
 bytes of the BIE. This function will then output any remaining lines
 and return JBG_EOK if no problem has occurred.
 
@@ -543,15 +544,15 @@ JBG_EOK. The additional boolean macros
   int jbg85_dec_finalheight(struct jbg85_dec_state *s);
   int jbg85_dec_finished(struct jbg85_dec_state *s);
 
-tell, whether the width and final height are already known, and
+tell whether the width and final height are already known, and
 whether the decoder has finished outputting all lines.
 
 If one of the callbacks to line_out() provides a non-zero return
 value, then the decoder will interrupt the decoding process and
 jbg85_dec_in() or jbg85_dec_end() will return JBG_EOK_INTR. This
 feature might be useful to stop the decoding process temporarily, e.g.
-to load a new sheet of paper, where performing this task is
-inconvenient to complete inside line_out(). It is then possible to
+to load a new sheet of paper, where it would be inconvenient to do
+this inside line_out(). It is then possible to
 continue calling jbg85_dec_in() with the remaining data (or
 jbg85_dec_end() if there isn't any left) in order to decode the
 remaining lines of the BIE. After jbg85_dec_in() returned
@@ -566,10 +567,10 @@ occurred and the decoding process has been aborted. The function
 
   const char *jbg85_strerror(int errnum);
 
-returns a pointer to a short single-line test message that explains
+returns a pointer to a short single-line text message that explains
 the return value of jbg85_dec_in() or jbg85_dec_end(). This message
 can be used in order to provide the user a brief informative message
-about what when wrong while decompressing a JBIG image. The po/
+about what went wrong while decompressing a JBIG image. The po/
 subdirectory contains *.po files that translate the English ASCII
 strings returned by jbg85_strerror() into other languages (e.g., for
 use with GNU gettext). The four least-significant bits of the return
@@ -581,7 +582,7 @@ useful to display the return value itself as a hexadecimal number, in
 addition to the string returned by jbg85_strerror().
 
 
-4  Additional notes
+5  Additional notes
 
 The following remarks will not affect the normal user of the library
 but might be of interest to some users who have to deal with exotic
@@ -591,7 +592,7 @@ there:
   - There has been one report about malformed BIEs produced by another
     JBIG implementation that violates the standard by containing
     several NEWLEN marker segments in the same BIE. The jbig85.c
-    decoder will normally abort with JBG_EINVALID when it encounters
+    decoder will normally abort with JBG_EINVAL when it encounters
     such an illegal BIE. The compile-time option
     JBG85_TOLERATE_MULTIPLE_NEWLEN can be used to make the decoder
     more tolerant to this type of syntax error.
